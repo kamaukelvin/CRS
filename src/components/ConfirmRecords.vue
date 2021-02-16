@@ -3,7 +3,7 @@
     <div class="col-md-7">
         <p>SERIAL NO. <span class="font-weight-bold">4567878</span></p>
   <v-stepper v-model="curr" color="green">
-                <v-stepper-header>
+                <v-stepper-header class="elevation-0">
                     <v-stepper-step 
                         v-for="(step,n) in steps"
                         :key="n"

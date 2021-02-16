@@ -1,10 +1,10 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer :mini-variant.sync="mini" v-model="drawer" app>
       <Sidebar />
     </v-navigation-drawer>
     <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer">
+      <v-app-bar-nav-icon @click="mini = !mini">
       </v-app-bar-nav-icon>
       <v-toolbar-title>Civil registration and vital statistics system</v-toolbar-title>
     </v-app-bar>
@@ -12,8 +12,9 @@
     <v-main class="p-0">
       <v-container>
            <h1 class="title">Birth Registrations</h1>
-            <!-- <SearchResult/> -->
-            <ConfirmRecords/>
+           <SearchBar/>
+            <SearchPlaceholder v-if="this.keyword===null"/>
+            <SearchResult v-else/>
         
       </v-container>
     </v-main>
@@ -22,26 +23,34 @@
 
 <script>
 import Sidebar from "../../components/Sidebar";
- //import SearchResult from "../../components/SearchResult";
- import ConfirmRecords from "../../components/ConfirmRecords";
+import SearchBar from "../../components/SearchBar";
+ import SearchResult from "../../components/SearchResult";
+ import SearchPlaceholder from "../../components/SearchPlaceholder";
+  // import ConfirmRecords from "../../components/ConfirmRecords";
 
 export default {
   name: "Dashboard",
   components: {
     Sidebar,
-     //SearchResult,
-     ConfirmRecords,
+    SearchResult,
+    SearchPlaceholder,
+    SearchBar
   },
   data: () => ({
     loading: false,
     drawer: null,
+    mini:false,
+    keyword:null
   }),
   methods: {
-    reserve() {
-      this.loading = true;
+     onSearch(){
+      this.keyword
+      this.$router.push('confirmRecord')
 
-      setTimeout(() => (this.loading = false), 2000);
     },
+    onNavClick(){
+this.mini=true
+    }
   },
 };
 </script>

@@ -1,96 +1,143 @@
 <template>
-          <v-card :loading="loading" class="">
-            <template slot="progress">
-              <v-progress-linear
-                color="#35A19E"
-                indeterminate
-              ></v-progress-linear>
-            </template>
-            <v-card-title class="card-title">Search Record</v-card-title>
-
-            <v-card-text>
-                      <!-- search bar -->
-        <div class="my-10">
-          <div class="input-group">
-            <select class="form-select" id="inputGroupSelect01">
-              <option selected>Choose...</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Text input with 2 dropdown buttons"
-            />
-            <button
-              class="btn btn-danger text-white"
-              type="button"
-              aria-expanded="false"
-              @click="reserve"
-            >
-              Search<span class="ml-2">
-                <v-icon small color="white">
-                  mdi-magnify
-                </v-icon></span
-              >
-            </button>
-          </div>
-          </div>
-          <!-- end of search bar -->
-              
-               </v-card-text>
-            <div class="row card-body">
-              <div class="col-md-3 d-flex flex-wrap justify-content-center align-items-center">
-                <v-img max-height="150" max-width="150" :src="image"></v-img>
-              </div>
-              <div class="col-md-9">
-               <p>You can search a record by: </p>
-               <ul class="placeholder__list">
-                 <li>ABN Serial Number</li>
-                 <li>Name of the child (first name, middle name, surname)</li>
-                 <li>Date of Birth</li>
-                 <li>Name of the mother (first name, middle name, surname)</li>
-                 <li>Name of the father (first name, middle name, surname)</li>
-                 <li>District of birth</li>
-                 </ul>
-              </div>
-            </div>
+  <v-data-table :headers="headers" :items="results" class="elevation-1">
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title>Search Result</v-toolbar-title>
+        <v-dialog v-model="dialog">
+          <v-card>
+            <v-card-title class="bg-light card__header">
+              Confirm Records
+                <v-btn
+            icon
+            color="red"
+            class="ml-auto"
+            @click="dialog = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+            </v-card-title>
+            <v-card-text class="p-5">
+              <ConfirmRecords />
+            </v-card-text>
           </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon small class="mr-3" color="green" @click="verifyItem(item)">
+        mdi-check-decagram
+      </v-icon>
+      <v-icon small @click="editItem(item)">
+        mdi-pencil
+      </v-icon>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
-import image from "../assets/images/Group.png";
+import ConfirmRecords from "../components/ConfirmRecords";
 export default {
-    name:'SearchResult',
-      data: () => ({
-    image: image,
+  data: () => ({
+    dialog: false,
+    headers: [
+      { text: "Entry Number", value: "entry_number", sortable: false },
+      { text: "Entry Date", value: "entry_date", sortable: false },
+      { text: "Child Name", value: "child_name", sortable: false },
+      { text: "Date of Birth", value: "dob", sortable: false },
+      { text: "Mother ID", value: "mother_id", sortable: false },
+      { text: "Mother Name", value: "mother_name", sortable: false },
+      { text: "Father ID", value: "father_id", sortable: false },
+      { text: "Father Name", value: "father_name", sortable: false },
+      { text: "Registra Name", value: "registra", sortable: false },
+      { text: "Actions", value: "actions", sortable: false },
+    ],
+    results: [],
   }),
+  components: {
+    ConfirmRecords,
+  },
 
-}
+  computed: {},
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    initialize() {
+      this.results = [
+        {
+          entry_number: 23456777,
+          entry_date: "24/12/2020",
+          child_name: "Regina Omondi",
+          dob: "24/12/2020",
+          mother_id: 1234567,
+          mother_name: "Janet Omondi",
+          father_name: "Victor Omondi",
+          father_id: 34567833,
+          registra: "Kinuthia",
+        },
+      ];
+    },
+
+    editItem(item) {
+      this.editedIndex = this.results.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    verifyItem(item) {
+      this.editedIndex = this.results.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      this.desserts.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      } else {
+        this.desserts.push(this.editedItem);
+      }
+      this.close();
+    },
+  },
+};
 </script>
 
-<style scoped>
-.card-title {
-  background: #3b5f85;
-  color: #fff;
-  font-size: 16px;
-  letter-spacing: 0.1px;
-  text-transform: uppercase;
-}
-.placeholder__list{
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-
-}
-.placeholder__list li{
-  font-weight: bold;
-  
-}
-.placeholder__list li:before {
- content: '✓'; 
- color:#35A19E;
- margin-right: 10px;
+<style>
+.card__header{
+    position: sticky;
+    top: 0;
+    z-index: 2345;
 }
 </style>

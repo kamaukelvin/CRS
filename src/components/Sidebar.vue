@@ -26,13 +26,13 @@
         >
           <v-list-item link>
             <v-list-item-icon>
-              <v-icon>mdi-folder</v-icon>
+              <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
           <v-list-item link>
             <v-list-item-icon>
-              <v-icon>mdi-account-multiple</v-icon>
+              <v-icon>mdi-baby-carriage</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Birth Registrations</v-list-item-title>
           </v-list-item>

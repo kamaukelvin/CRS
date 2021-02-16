@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from '../views/login/Login'
 import Dashboard from '../views/dashboard/Dashboard'
+import SearchRecord from '../components/SearchResult'
+import ConfirmRecords from '../components/ConfirmRecords'
 
 Vue.use(VueRouter);
 
@@ -10,11 +12,29 @@ const routes = [
     path: "/",
     name: "login",
     component: Login,
+    meta: {
+      guest: true
+  }
   },
   {
     path: "/dashboard",
     name: "dashboard",
     component: Dashboard,
+    meta: {
+      requiresAuth: true
+  },
+    children: [
+      {
+        path: 'searchRecord',
+        component: SearchRecord
+      },
+      {
+        // B will be rendered in the second <router-view>
+        // when /your-sidebar-url/b is matched
+        path: '/confirmRecord',
+        component: ConfirmRecords
+      }
+    ]
   },
 
   
